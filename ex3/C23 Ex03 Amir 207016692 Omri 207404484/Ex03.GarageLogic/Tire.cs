@@ -1,14 +1,14 @@
 ﻿using System;
 
-namespace Ex03.GarageLogic
+namespace Ex03
 {
-    internal class Tire
+    public class Tire
     {
         protected readonly string r_ManufacturerName = null;
         protected float m_TirePressure = 0f;
         protected readonly float r_MaximumPressure = 0f; 
 
-        internal Tire(string i_ManufacturerName, float i_TirePressure, float i_MaximumPressure)
+        public Tire(string i_ManufacturerName, float i_TirePressure, float i_MaximumPressure)
         {
             r_ManufacturerName = i_ManufacturerName;
             m_TirePressure = i_TirePressure;
@@ -17,13 +17,13 @@ namespace Ex03.GarageLogic
         
         internal void InflateTire(float i_AmountOfAirToInflate)
         {
-            try
+            if(i_AmountOfAirToInflate + m_TirePressure > r_MaximumPressure)
+            {
+                throw new ValueOutOfRangeException("tire", MaximumPressure, "PSI");
+            }
+            else
             {
                 m_TirePressure += i_AmountOfAirToInflate; 
-            }
-            catch
-            {
-                //TBD (Exception - Too much air)
             }
         }
 
@@ -35,6 +35,15 @@ namespace Ex03.GarageLogic
         internal float MaximumPressure
         {
             get { return r_MaximumPressure; }
+        }
+
+        public override string ToString()
+        {
+            string toOut = String.Format("Manufacturer name: {0}\n" +
+                "Tire pressure: {1}\n" +
+                "Maximum pressure: {2}\n", r_ManufacturerName, m_TirePressure, r_MaximumPressure);
+
+            return toOut;
         }
     }
 }

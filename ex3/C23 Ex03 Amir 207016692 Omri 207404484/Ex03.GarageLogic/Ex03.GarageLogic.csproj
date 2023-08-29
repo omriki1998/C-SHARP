@@ -51,6 +51,7 @@
     <Compile Include="Lorry.cs" />
     <Compile Include="GarageVehicle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValueOutOfRangeException.cs" />
     <Compile Include="Vehicle.cs" />
     <Compile Include="Tire.cs" />
   </ItemGroup>
