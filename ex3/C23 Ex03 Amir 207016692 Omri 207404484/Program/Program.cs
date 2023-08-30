@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Ex03
 {
@@ -45,39 +46,65 @@ namespace Ex03
                         "5. Fuel a vehicle\n" +
                         "6. Charge an electric vehicle\n" +
                         "7. Display full details of a specific vehicle\n"));
-                string userChoiceStr = Console.ReadLine();
-                int o_UserChoice;
-                bool isValid = int.TryParse(userChoiceStr, out o_UserChoice); 
-                if(isValid)
-                {
-                    if(o_UserChoice > 0 && o_UserChoice < 8)
-                    {
-                        validUserChoice = true;
-                        switch (o_UserChoice)
-                        {
-                            case 1: 
-                                displayAddNewVehicleToGarageMenu();
-                                break;
-                            case 2:
-                                displayListOfVehiclesInGarageMenu();
-                                break;
-                            case 3:
 
+                        switch (Console.ReadLine())
+                        {
+                            case "1": 
+                                displayAddNewVehicleToGarageMenu();
+                                validUserChoice = true;
+                                break;
+                            case "2":
+                                displayListOfVehiclesInGarageMenu();
+                                validUserChoice = true;
+                                break;
+                            case "3":
+                                displayChangeVehicleStatusMenu();
+                                validUserChoice = true;
+                                break;
+                            case "4":
+                                displayInflateTireMenu();
+                                validUserChoice = true;
+                                break;
+                            case "5":
+                                displayFillFuelMenu();
+                                validUserChoice = true;
+                                break;
+                            case "6":
+                                displayChargeBatteryMenu();
+                                validUserChoice = true;
+                                break;
+                            case "7":
+                                displayFullDetailsOfVehicleMenu();
+                                validUserChoice = true;
+                                break;
+                            default:
+                                Console.Clear();
+                                Console.WriteLine("Option selected is invalid! \n");
+                                continue;
                         }
-                    }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Option selected is invalid! \n");
-                        continue; 
-                    }
-                }
             }
         }
 
         private static void displayAddNewVehicleToGarageMenu()
         {
-
+            bool validInput = false;
+            Console.Clear();
+            while (!validInput)
+            {
+                Console.WriteLine("Please enter the license plate for the desired vehicle: ");
+                string userInput = Console.ReadLine();
+                bool validLicensePlate = isValidLicensePlate(userInput);
+                if (!validLicensePlate)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Please enter a valid license plate. (Should consist of letters and digits only, and be between 5-10 characters long)\n");
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
 
         private static void displayListOfVehiclesInGarageMenu()
@@ -108,6 +135,20 @@ namespace Ex03
         private static void displayFullDetailsOfVehicleMenu()
         {
 
+        }
+
+        private static bool isValidLicensePlate(string i_LicensePlate)
+        {
+            bool isValidLicensePlate = true; 
+            foreach(char c in i_LicensePlate)
+            {
+                if (!Char.IsLetterOrDigit(c) || i_LicensePlate.Length < 5 || i_LicensePlate.Length > 10)
+                {
+                    isValidLicensePlate = false;
+                }
+            }
+
+            return isValidLicensePlate;
         }
 
         private void addNewVehicle(Vehicle vehicle)
