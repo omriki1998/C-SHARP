@@ -1,50 +1,86 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ex03
 {
     public class FuelVehicle : Vehicle
     {
-        protected readonly float r_FuelTankSize = 0f;
-        protected readonly eFuelType? r_FuelType = null;
+        protected float m_FuelTankSize = 0f;
+        protected eFuelType? m_FuelType = null;
         protected float m_CurrentFuelLevel = 0f;
 
-        internal FuelVehicle(string i_ModelName, string i_LicensePlate, float i_EnergyLevelPercentage, Tire i_CarTires, byte i_NumOfTires, float i_FuelTankSize,  eFuelType i_FuelType)
-            : base(i_ModelName, i_LicensePlate, i_EnergyLevelPercentage, i_CarTires, i_NumOfTires)
+        internal FuelVehicle(byte i_NumOfTires, float i_MaxTirePressure, float i_FuelTankSize)
+            : base(i_NumOfTires, i_MaxTirePressure)
         {
-            r_FuelTankSize = i_FuelTankSize;
-            r_FuelType = i_FuelType;
-            m_CurrentFuelLevel = i_FuelTankSize * (i_EnergyLevelPercentage / 100);
+            m_FuelTankSize = i_FuelTankSize;
+            r_QuestionsToCreateNewVehicle.Add("What is the vehicle fuel type? ", InvokeFuelTypeSetter);
+            r_QuestionsToCreateNewVehicle.Add("What is the current fuel level? ", InvokeCurrentFuelLevelSetter);
         }
 
         internal void FillFuel(eFuelType i_FuelType, float i_LitresOfFuelToFill)
         {
-            if (i_FuelType != r_FuelType)
+            if (i_FuelType != m_FuelType)
             {
-                throw new ArgumentException(string.Format("Fuel type does not match the vehicle's fuel. Try {0}", r_FuelType));
+                throw new ArgumentException(string.Format("Fuel type does not match the vehicle's fuel. Try {0}", m_FuelType));
             }
-            else if (i_LitresOfFuelToFill + m_CurrentFuelLevel > r_FuelTankSize)
+            else if (i_LitresOfFuelToFill + m_CurrentFuelLevel > m_FuelTankSize)
             {
-                throw new ValueOutOfRangeException("fuel", r_FuelTankSize, "litres");
+                throw new ValueOutOfRangeException(0, m_FuelTankSize);
             }
             else
             {
-                base.m_EnergyRemainingPrecentage += i_LitresOfFuelToFill / r_FuelTankSize;
+                base.m_EnergyRemainingPrecentage += i_LitresOfFuelToFill / m_FuelTankSize;
+            }
+        }
+
+        public void InvokeCurrentFuelLevelSetter(string i_CurrentFuelLevel)
+        {
+            bool isValidFuelLevel = float.TryParse(i_CurrentFuelLevel, out float o_CurrentFuelLevel);
+
+            if (!isValidFuelLevel)
+            {
+                throw new FormatException("Please enter a valid number");
+            }
+            else if(o_CurrentFuelLevel < 0 || o_CurrentFuelLevel > m_FuelTankSize)
+            {
+                throw new ValueOutOfRangeException(0, m_FuelTankSize);
+            }
+            else
+            {
+                this.CurrentFuelLevel = o_CurrentFuelLevel;
+            }
+        }
+
+        public void InvokeFuelTypeSetter(string i_FuelType)
+        {
+            bool isValidFuelType = Enum.TryParse(i_FuelType, out eFuelType o_EFuelType);
+
+            if (!isValidFuelType)
+            {
+                throw new ArgumentException("Please enter a valid fuel type");
+            }
+            else
+            {
+                this.FuelType = o_EFuelType;
             }
         }
 
         internal eFuelType? FuelType
         {
-            get { return r_FuelType; }
+            get { return m_FuelType; }
+            set { m_FuelType = value; }
         }
 
-        internal float fuelLevel
+        internal float CurrentFuelLevel
         { 
-            get { return base.m_EnergyRemainingPrecentage; }
+            get { return m_CurrentFuelLevel; }
+            set { m_CurrentFuelLevel = value; }
         }
 
         internal float FuelTankSize
         {
-            get { return r_FuelTankSize; }
+            get { return m_FuelTankSize; }
+            set { m_FuelTankSize = value; }
         }
 
         public enum eFuelType
@@ -60,7 +96,7 @@ namespace Ex03
             string fuelVehicleString = string.Format("{0}\n" +
                 "Fuel Tank Size: {1}\n" +
                 "Fuel type: {2}\n" +
-                "Current fuel level: {3}", base.ToString(), r_FuelTankSize, r_FuelType, m_CurrentFuelLevel);
+                "Current fuel level: {3}", base.ToString(), m_FuelTankSize, m_FuelType, m_CurrentFuelLevel);
 
             return fuelVehicleString; 
         }

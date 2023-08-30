@@ -1,23 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Ex03
 {
     public abstract class Vehicle
     {
-        protected readonly string r_ModelName = null;
-        protected readonly string r_LicensePlate = null;
+        protected string m_ModelName = null;
+        protected string m_LicensePlate = null;
         protected float m_EnergyRemainingPrecentage = 0f;
         protected Tire[] m_Tires = null;
-        protected Tire m_TireType = null;
+        protected Tire m_TireType = new Tire();
         protected readonly byte r_NumOfTires;
+        public readonly Dictionary<string, Action<string>> r_QuestionsToCreateNewVehicle = new Dictionary<string, Action<string>>();
 
-        public Vehicle(string i_ModelName, string i_LicensePlate, float i_EnergyLevelPercentage, Tire i_CarTire, byte i_NumOfTires)
+
+        public Vehicle(byte i_NumOfTires, float i_MaxPressure)
         {
-            r_ModelName = i_ModelName;
-            r_LicensePlate = i_LicensePlate;
-            m_EnergyRemainingPrecentage = i_EnergyLevelPercentage;
-            m_TireType = i_CarTire; 
+            r_QuestionsToCreateNewVehicle.Add("What is your vehicle model name? ", InvokeModelNameSetter);
+            r_QuestionsToCreateNewVehicle.Add("What is your license plate? ", InvokeLicensePlateSetter);
+            r_QuestionsToCreateNewVehicle.Add("What is the energy precentage of the vehicle? ", InvokeEnergyRemainingPrecentageSetter);
+            m_TireType.MaximumPressure = i_MaxPressure;
+            r_QuestionsToCreateNewVehicle = r_QuestionsToCreateNewVehicle.Union(m_TireType.r_QuestionsToCreateNewTire).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             r_NumOfTires = i_NumOfTires;
         }
 
@@ -30,9 +35,58 @@ namespace Ex03
             }
         }
 
+        public void InvokeLicensePlateSetter(string i_LicensePlate)
+        {
+            if (i_LicensePlate.Length < 5 || i_LicensePlate.Length > 10)
+            {
+                throw new ValueOutOfRangeException(5f, 10f);
+            }
+            else if (!isValidLicensePlate(i_LicensePlate))
+            {
+                throw new ArgumentException("Invalid license plate. Please make sure the license plate consists of numbers and letters only.");
+            }
+            else
+            {
+                this.LicensePlate = i_LicensePlate;
+            }
+        }
+
+        public void InvokeModelNameSetter(string i_ModelName)
+        {
+            if(i_ModelName.Length == 0)
+            {
+                throw new FormatException("Please enter a valid name");
+            }
+            this.ModelName = i_ModelName;
+        }
+
+        public void InvokeEnergyRemainingPrecentageSetter(string i_EnergyRemainingPrecentage)
+        {
+            bool isValidNumber = float.TryParse(i_EnergyRemainingPrecentage, out float o_EnergyRemainingPrecentage);
+
+            if (!isValidNumber)
+            {
+                throw new FormatException("Please enter a valid number");
+            }
+            else if(o_EnergyRemainingPrecentage < 0 || o_EnergyRemainingPrecentage > 100)
+            {
+                throw new ValueOutOfRangeException(0, 100);
+            }
+            else
+            {
+                this.EnergyRemainingPrecentage = o_EnergyRemainingPrecentage;
+            }
+        }
+
+        public Dictionary<string, Action<string>> QuestionsToCreateNewVehicle
+        {
+            get { return r_QuestionsToCreateNewVehicle; }
+        }
+
         internal string LicensePlate
         {
-            get { return r_LicensePlate; }
+            get { return m_LicensePlate; }
+            set { m_LicensePlate = value; }
         }
 
         internal byte NumOfTires
@@ -40,9 +94,40 @@ namespace Ex03
             get { return r_NumOfTires; }
         }
 
+        internal string ModelName
+        {
+            get { return m_ModelName; }
+            set { m_ModelName = value; }
+        }
+
+        internal float EnergyRemainingPrecentage
+        {
+            get { return m_EnergyRemainingPrecentage; }
+            set { m_EnergyRemainingPrecentage = value; }
+        }
+
+        internal Tire TireType 
+        {
+            get { return m_TireType; }
+        }
+
         internal Tire[] Tires
         {
             get { return m_Tires; }
+        }
+
+        private static bool isValidLicensePlate(string i_LicensePlate)
+        {
+            bool isValidLicensePlate = true;
+            foreach (char c in i_LicensePlate)
+            {
+                if (!Char.IsLetterOrDigit(c))
+                {
+                    isValidLicensePlate = false;
+                }
+            }
+
+            return isValidLicensePlate;
         }
 
         public enum eMotorcycleLicenseType
@@ -64,9 +149,9 @@ namespace Ex03
         public enum eNumOfDoors
         {
             Two = 2, 
-            Three = 3, 
-            Four = 4, 
-            Five = 5
+            Three, 
+            Four, 
+            Five
         }
 
         public override string ToString()
@@ -75,7 +160,7 @@ namespace Ex03
                 "License plate: {1}\n" +
                 "Energy remaining percentage: {2}\n" +
                 "Number of tires: {3}\n" +
-                "Tire Type: \n{4}", r_ModelName, r_LicensePlate, m_EnergyRemainingPrecentage, r_NumOfTires, tireArrayToString());
+                "Tire Type: \n{4}", m_ModelName, m_LicensePlate, m_EnergyRemainingPrecentage, r_NumOfTires, tireArrayToString());
 
             return toOut;
         }

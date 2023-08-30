@@ -8,23 +8,21 @@ namespace Ex03
     {
         public Dictionary<string, GarageVehicle> m_VehiclesDict = new Dictionary<string, GarageVehicle>();
 
-
-        public bool PutNewVehicleInGarage(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber, GarageVehicle.eCarStatus i_CarStatus)
+        public bool isVehicleInGarage(string i_LicensePlate)
         {
-            bool isCarInGarage = false;
-            if (m_VehiclesDict.ContainsKey(i_Vehicle.LicensePlate))
-            {
-                isCarInGarage = true;
-                GarageVehicle currentCarInGarage = m_VehiclesDict[i_Vehicle.LicensePlate];
-                currentCarInGarage.CarStatus = GarageVehicle.eCarStatus.Repair;
-            }
-            else
-            {
+            return m_VehiclesDict.ContainsKey(i_LicensePlate);
+        }
+
+        public void PutNewVehicleInGarage(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber, GarageVehicle.eCarStatus i_CarStatus)
+        {
             GarageVehicle garageVehicle = new GarageVehicle(i_Vehicle, i_OwnerName, i_OwnerPhoneNumber, i_CarStatus);
             m_VehiclesDict.Add(key: i_Vehicle.LicensePlate, value: garageVehicle); 
-            }
+        }
 
-            return isCarInGarage;
+        public void updateExistingVehicle(string i_LicensePlate)
+        {
+            GarageVehicle currentCarInGarage = m_VehiclesDict[i_LicensePlate];
+            currentCarInGarage.CarStatus = GarageVehicle.eCarStatus.Repair;
         }
 
         public List<string> GetListOfCarsInGarage(GarageVehicle.eCarStatus i_CarStatus)

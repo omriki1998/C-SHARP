@@ -7,8 +7,20 @@ namespace Ex03
         protected float m_MaxValue = 0f;
         protected float m_MinValue = 0f; 
 
-        internal ValueOutOfRangeException(string i_Word, float i_MaxCapacity, string i_Units)
-            : base(string.Format("An error occured while trying to fill {0}. Amount to fill exceeds maximum capacity. Maximum capacity is: {1} {2}", i_Word, i_MaxCapacity, i_Units))
+        internal ValueOutOfRangeException(float i_MinCapacity, float i_MaxCapacity)
+            : base(string.Format("Value out of range exception. Min value is: {0}, max value is: {1}", i_MinCapacity, i_MaxCapacity))
                   { }
+
+        internal float MaxValue
+        {
+            get { return m_MaxValue; }
+            set { m_MaxValue = value; }
+        }
+
+        internal float MinValue
+        {
+            get { return m_MinValue; }
+            set { m_MinValue = value; }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Ex03
@@ -7,17 +8,7 @@ namespace Ex03
     {
         static void Main(string[] args)
         {
-            Tire carTire = new Tire("Michlen", 32, 32);
-            Tire motorcycleTire = new Tire("Michlen", 30, 30);
-            Tire lorryTire = new Tire("Michlen", 27, 27);
-
-            ElectricCar ec = new ElectricCar("Tesla", "12345678", 100f, carTire, Vehicle.eCarColour.Black, Vehicle.eNumOfDoors.Four);
-            ElectricMotorcycle em = new ElectricMotorcycle("Dukati", "00000000", 100f, motorcycleTire, Vehicle.eMotorcycleLicenseType.A1, 250);
-            FuelCar fc = new FuelCar("Subaru XV", "87654321", 100f, carTire, FuelVehicle.eFuelType.Octan96, Vehicle.eCarColour.Red, Vehicle.eNumOfDoors.Five);
-            FuelMotorcycle fm = new FuelMotorcycle("KTM", "11122234", 100f, motorcycleTire, FuelVehicle.eFuelType.Octan95, Vehicle.eMotorcycleLicenseType.AB, 500);
-            Lorry lorry = new Lorry("MAN", "66666666", 100f, lorryTire, FuelVehicle.eFuelType.Soler, true, 100f);
             RunGarage();
-
         }
 
         public static void RunGarage()
@@ -26,14 +17,15 @@ namespace Ex03
             Garage garage = new Garage(); 
             while (true)
             {
-                displayMenu();
+                displayMenu(garage);
                 Console.ReadLine();
-                DisplayListOfVehiclesInGarage(garage, "Some readline license plate");
+
+                //DisplayListOfVehiclesInGarage(garage, "Some readline license plate");
                 Console.ReadLine();
             }
         }
 
-        private static void displayMenu()
+        private static void displayMenu(Garage i_Garage)
         {
             bool validUserChoice = false;
             while(!validUserChoice)
@@ -50,7 +42,7 @@ namespace Ex03
                         switch (Console.ReadLine())
                         {
                             case "1": 
-                                displayAddNewVehicleToGarageMenu();
+                                displayAddNewVehicleToGarageMenu(i_Garage);
                                 validUserChoice = true;
                                 break;
                             case "2":
@@ -85,15 +77,16 @@ namespace Ex03
             }
         }
 
-        private static void displayAddNewVehicleToGarageMenu()
+        private static void displayAddNewVehicleToGarageMenu(Garage i_Garage)
         {
-            bool validInput = false;
+            addNewVehicle(i_Garage, "123445");
+            /*bool validInput = false;
             Console.Clear();
             while (!validInput)
             {
                 Console.WriteLine("Please enter the license plate for the desired vehicle: ");
-                string userInput = Console.ReadLine();
-                bool validLicensePlate = isValidLicensePlate(userInput);
+                string userInputLicensePlate = Console.ReadLine();
+                bool validLicensePlate = isValidLicensePlate(userInputLicensePlate);
                 if (!validLicensePlate)
                 {
                     Console.Clear();
@@ -102,9 +95,9 @@ namespace Ex03
                 }
                 else
                 {
-                    break;
+                    addNewVehicle(i_Garage, userInputLicensePlate);
                 }
-            }
+            }*/
         }
 
         private static void displayListOfVehiclesInGarageMenu()
@@ -137,23 +130,72 @@ namespace Ex03
 
         }
 
-        private static bool isValidLicensePlate(string i_LicensePlate)
+        private static void addNewVehicle(Garage i_Garage, string i_LicensePlate)
         {
-            bool isValidLicensePlate = true; 
-            foreach(char c in i_LicensePlate)
+            if (i_Garage.isVehicleInGarage(i_LicensePlate))
             {
-                if (!Char.IsLetterOrDigit(c) || i_LicensePlate.Length < 5 || i_LicensePlate.Length > 10)
+                i_Garage.updateExistingVehicle(i_LicensePlate);
+            }
+            else
+            {
+                Vehicle currentVehicle = new FuelCar();
+                foreach(KeyValuePair<string, Action<string>> kvp in currentVehicle.QuestionsToCreateNewVehicle)
                 {
-                    isValidLicensePlate = false;
+                    bool validArgument = false;
+                    
+                    Console.WriteLine(kvp.Key);
+                    while (!validArgument)
+                    {
+                        try
+                        {
+                            kvp.Value(Console.ReadLine());
+                            validArgument = true;
+                        }
+                        catch(Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                    }
                 }
             }
-
-            return isValidLicensePlate;
         }
 
-        private void addNewVehicle(Vehicle vehicle)
+        /*private static Vehicle createNewVehicle()
         {
-            //TODO
+            string[] vehicleDetails = getVehicleDetailsFromUser();
+            Tire vehicleTire = createNewTire();
+            Vehicle newVehicle = new Vehicle(vehicleDetails[0], vehicleDetails[1], float.Parse(vehicleDetails[2]), vehicleTire, byte.Parse(vehicleDetails[3]));
+
+            return newVehicle;
+        }*/
+
+        private static Tire createNewTire()
+        {
+            Tire newTire = null;
+
+            return newTire;
+        }
+
+        private static string[] getVehicleDetailsFromUser()
+        {
+            string[] newVehicleDetails = new string[7];
+            string modelName = String.Empty;
+            string licensePlate = String.Empty;
+            string energyPrecentage = String.Empty;
+            string tireManufacturer = String.Empty;
+            string tirePressure = String.Empty;
+            string maxTirePressure = String.Empty;
+            string numOfTires = String.Empty;
+
+            string msgToUser = String.Format("Model: {0}\n" +
+                "License plate: {1}\n" +
+                "Percentage of energy: {2}\n" +
+                "Tire manufacturer: {3}\n" +
+                "Tire pressure: {4}\n" +
+                "Maximum tire pressure: {5}\n" +
+                "Number of tires: {6}\n", modelName, licensePlate, energyPrecentage, tireManufacturer, tirePressure, maxTirePressure, numOfTires);
+
+            return newVehicleDetails;
         }
 
         private static void DisplayListOfVehiclesInGarage(Garage i_Garage, string i_LicensePlate)
