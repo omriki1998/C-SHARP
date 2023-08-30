@@ -20,11 +20,11 @@ namespace Ex03
 
         public override string ToString()
         {
-            string toOut = string.Format("License type: {0}\n" +
-                "Engine volume: {1}\n" +
-                "Maximum fuel capacity in liters: {2}\n", r_LicensePlate, r_EngineVol, k_MaximumFuelCapacityLitres);
+            string fuelMotorcycleString = string.Format("{0}\n" +
+                "License type: {1}\n" +
+                "Engine volume: {2}\n", base.ToString(), r_LicenseType, r_EngineVol);
 
-            return toOut;
+            return fuelMotorcycleString;
         }
     }
 }

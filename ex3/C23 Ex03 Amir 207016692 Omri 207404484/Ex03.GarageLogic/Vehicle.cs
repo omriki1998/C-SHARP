@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 namespace Ex03
 {
@@ -74,9 +75,34 @@ namespace Ex03
                 "License plate: {1}\n" +
                 "Energy remaining percentage: {2}\n" +
                 "Number of tires: {3}\n" +
-                "Tire Type: {4}\n", r_ModelName, r_LicensePlate, m_EnergyRemainingPrecentage, r_NumOfTires, m_TireType.ToString());
+                "Tire Type: \n{4}", r_ModelName, r_LicensePlate, m_EnergyRemainingPrecentage, r_NumOfTires, tireArrayToString());
 
             return toOut;
+        }
+
+        private string tireArrayToString()
+        {
+            StringBuilder tiresString = new StringBuilder();
+            tiresString.Append("Manufacturer name: " + m_TireType.ManufacturerName);
+            tiresString.AppendLine();
+            tiresString.Append("Tires pressure: ");
+            for (int i = 0; i < m_Tires.Length; i++)
+            {   
+                if (i == m_Tires.Length - 1)
+                {
+                    tiresString.Append(m_Tires[i].TirePressure);
+
+                }
+                else
+                {
+                  tiresString.Append(m_Tires[i].TirePressure + ", ");
+                }
+            }
+
+            tiresString.AppendLine();
+            tiresString.Append("Maximum pressure of tires: " + m_TireType.MaximumPressure);
+
+            return tiresString.ToString();
         }
     }
 }

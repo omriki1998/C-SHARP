@@ -18,11 +18,11 @@ namespace Ex03
 
         public override string ToString()
         {
-            string toOut = string.Format("Number of doors: {0}\n" +
-                "Colour of car: {1}\n" +
-                "Maximum hours of charge on battery: {2}\n", r_NumOfDoors, r_CarColour, k_MaximumHoursOfChargeOnBattery);
+            string electricCarString = string.Format("{0}\n" +
+                "Number of doors: {1}\n" +
+                "Colour of car: {2}\n", base.ToString(), r_NumOfDoors, r_CarColour);
 
-            return toOut;
+            return electricCarString;
         }
     }
 }

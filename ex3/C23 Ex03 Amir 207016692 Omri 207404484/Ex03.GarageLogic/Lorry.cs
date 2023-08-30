@@ -18,11 +18,11 @@ namespace Ex03
 
         public override string ToString()
         {
-            string toOut = string.Format("Lorry is cold transport: {0}\n" +
-                "Volume of cargo: {1}\n" +
-                "Maxmum fuel capacity in liters: {2}\n", r_IsColdTransporter, r_VolumeOfCargo, k_MaximumFuelCapacityLitres);
+            string lorryString = string.Format("{0}\n" +
+                "Lorry is cold transport: {1}\n" +
+                "Volume of cargo: {2}\n", base.ToString(), r_IsColdTransporter, r_VolumeOfCargo);
 
-            return toOut;
+            return lorryString;
         }
     }
 }

@@ -37,6 +37,11 @@ namespace Ex03
             get { return r_MaximumPressure; }
         }
 
+        internal string ManufacturerName
+        {
+            get { return r_ManufacturerName; }
+        }
+
         public override string ToString()
         {
             string toOut = String.Format("Manufacturer name: {0}\n" +

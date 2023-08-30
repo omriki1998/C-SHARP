@@ -57,11 +57,12 @@ namespace Ex03
 
         public override string ToString()
         {
-            string toOut = string.Format("Fuel Tank Size: {0}\n" +
-                "Fuel type: {1}\n" +
-                "Current fuel level: {2}\n", r_FuelTankSize, r_FuelType, m_CurrentFuelLevel);
+            string fuelVehicleString = string.Format("{0}\n" +
+                "Fuel Tank Size: {1}\n" +
+                "Fuel type: {2}\n" +
+                "Current fuel level: {3}", base.ToString(), r_FuelTankSize, r_FuelType, m_CurrentFuelLevel);
 
-            return toOut; 
+            return fuelVehicleString; 
         }
     }
 }

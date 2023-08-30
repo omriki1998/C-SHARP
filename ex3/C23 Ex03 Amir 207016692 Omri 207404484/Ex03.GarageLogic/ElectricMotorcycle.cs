@@ -18,11 +18,11 @@ namespace Ex03
 
         public override string ToString()
         {
-            string toOut = string.Format("Licesnse type: {0}\n" +
-                "Engine volume: {1}\n" +
-                "Maximum hours of charge on battery: {2}\n", r_LicenseType, r_EngineVol, k_MaximumHoursOfChargeOnBattery);
+            string electricMotorcycleString = string.Format("{0}\n" +
+                "Licesnse type: {1}\n" +
+                "Engine volume: {2}\n", base.ToString(), r_LicenseType, r_EngineVol);
 
-            return toOut;
+            return electricMotorcycleString;
         }
     }
 }
