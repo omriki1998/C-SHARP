@@ -17,7 +17,11 @@ namespace Ex03
             : base(k_NumOfTires, k_TireMaxPressure, k_MaximumHoursOfChargeOnBattery)
         {
             r_QuestionsToCreateNewVehicle.Add("How many doors does your car have? ", InvokeNumOfDoorsSetter);
-            r_QuestionsToCreateNewVehicle.Add("What is your car colour? ", InvokeCarColourSetter);
+            r_QuestionsToCreateNewVehicle.Add(String.Format("Please state your car colour:\n" +
+                "1. Black\n" +
+                "2. White\n" +
+                "3. Red\n" +
+                "4. Blue\n"), InvokeCarColourSetter);
             base.SetTires(k_NumOfTires);
         }
        
@@ -50,13 +54,15 @@ namespace Ex03
         public void InvokeCarColourSetter(string i_CarColour)
         {
             bool isValidCarColour = Enum.TryParse(i_CarColour, out eCarColour o_ECarColour);
-            if (isValidCarColour)
+            bool isValidNum = int.TryParse(i_CarColour, out int o_CarColourNum);
+
+            if (!isValidCarColour || (isValidNum && !Enum.IsDefined(typeof(eCarColour), o_CarColourNum)))
             {
-                this.CarColour = o_ECarColour;
+                throw new ArgumentException("Please choose a colour from: Red, White, Black or Blue");
             }
             else
             {
-                throw new ArgumentException("Please choose a colour from: Red, White, Black or Blue");
+                this.CarColour = o_ECarColour;
             }
         }
 

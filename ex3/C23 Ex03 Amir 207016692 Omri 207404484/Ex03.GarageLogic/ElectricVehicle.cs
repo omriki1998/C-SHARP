@@ -12,7 +12,7 @@ namespace Ex03
             : base(i_NumOfTires, i_MaxTirePressure)
         {
             m_MaximumHoursOfChargeOnBattery = i_MaximumHoursOfChargeOnBattery;
-            r_QuestionsToCreateNewVehicle.Add("How many hours on battery remaining? ", InvokeBaterryHoursRemainingSetter);
+            m_BatteryHoursRemaining =  m_MaximumHoursOfChargeOnBattery * m_EnergyRemainingPrecentage;
         }
 
         internal void ChargeBattery(float i_NumberOfHoursToCharge)
@@ -27,7 +27,7 @@ namespace Ex03
             }
         }
 
-        internal void InvokeBaterryHoursRemainingSetter(string i_BatteryHoursRemaining)
+        /*internal void InvokeBaterryHoursRemainingSetter(string i_BatteryHoursRemaining)
         {
             bool isValidBaterryHours = float.TryParse(i_BatteryHoursRemaining, out float o_BaterryHoursRemaining);
 
@@ -44,12 +44,10 @@ namespace Ex03
                 this.BatteryHoursRemaining = o_BaterryHoursRemaining;
             }
         }
-
+        */
         internal float BatteryHoursRemaining 
         {
             get { return m_BatteryHoursRemaining; }
-            set { m_BatteryHoursRemaining = value; }
-            
         }
 
         internal float MaximumHoursOfChargeOnBattery

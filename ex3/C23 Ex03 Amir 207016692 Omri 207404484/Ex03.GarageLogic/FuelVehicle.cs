@@ -13,8 +13,12 @@ namespace Ex03
             : base(i_NumOfTires, i_MaxTirePressure)
         {
             m_FuelTankSize = i_FuelTankSize;
-            r_QuestionsToCreateNewVehicle.Add("What is the vehicle fuel type? ", InvokeFuelTypeSetter);
-            r_QuestionsToCreateNewVehicle.Add("What is the current fuel level? ", InvokeCurrentFuelLevelSetter);
+            r_QuestionsToCreateNewVehicle.Add(String.Format("Please choose your fuel type:\n" +
+                "1. Octan95\n" +
+                "2. Octan96\n" +
+                "3. Octan98\n" +
+                "4. Soler"), InvokeFuelTypeSetter);
+            m_CurrentFuelLevel = m_FuelTankSize * m_EnergyRemainingPrecentage;
         }
 
         internal void FillFuel(eFuelType i_FuelType, float i_LitresOfFuelToFill)
@@ -33,7 +37,7 @@ namespace Ex03
             }
         }
 
-        public void InvokeCurrentFuelLevelSetter(string i_CurrentFuelLevel)
+       /* public void InvokeCurrentFuelLevelSetter(string i_CurrentFuelLevel)
         {
             bool isValidFuelLevel = float.TryParse(i_CurrentFuelLevel, out float o_CurrentFuelLevel);
 
@@ -49,13 +53,15 @@ namespace Ex03
             {
                 this.CurrentFuelLevel = o_CurrentFuelLevel;
             }
-        }
+        }*/
 
         public void InvokeFuelTypeSetter(string i_FuelType)
         {
             bool isValidFuelType = Enum.TryParse(i_FuelType, out eFuelType o_EFuelType);
+            bool isValidNum = int.TryParse(i_FuelType, out int o_FuelTypeNum);
 
-            if (!isValidFuelType)
+
+            if (!isValidFuelType || (isValidNum && !Enum.IsDefined(typeof(eFuelType), o_EFuelType)))
             {
                 throw new ArgumentException("Please enter a valid fuel type");
             }
@@ -72,11 +78,9 @@ namespace Ex03
         }
 
         internal float CurrentFuelLevel
-        { 
+        {
             get { return m_CurrentFuelLevel; }
-            set { m_CurrentFuelLevel = value; }
         }
-
         internal float FuelTankSize
         {
             get { return m_FuelTankSize; }
@@ -85,10 +89,10 @@ namespace Ex03
 
         public enum eFuelType
         {
-            Octan98,
-            Octan96,
-            Octan95,
-            Soler
+            Octan95 = 1,
+            Octan96 = 2,
+            Octan98 = 3,
+            Soler = 4
         }
 
         public override string ToString()

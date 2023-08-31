@@ -37,17 +37,14 @@ namespace Ex03
 
         public void InvokeLicensePlateSetter(string i_LicensePlate)
         {
-            if (i_LicensePlate.Length < 5 || i_LicensePlate.Length > 10)
+            try
             {
-                throw new ValueOutOfRangeException(5f, 10f);
-            }
-            else if (!isValidLicensePlate(i_LicensePlate))
-            {
-                throw new ArgumentException("Invalid license plate. Please make sure the license plate consists of numbers and letters only.");
-            }
-            else
-            {
+                bool isValid = isValidLicensePlate(i_LicensePlate);
                 this.LicensePlate = i_LicensePlate;
+            }
+            catch
+            {
+                throw;
             }
         }
 
@@ -116,14 +113,23 @@ namespace Ex03
             get { return m_Tires; }
         }
 
-        private static bool isValidLicensePlate(string i_LicensePlate)
+        public static bool isValidLicensePlate(string i_LicensePlate)
         {
             bool isValidLicensePlate = true;
-            foreach (char c in i_LicensePlate)
+            if (i_LicensePlate.Length < 5 || i_LicensePlate.Length > 10)
             {
-                if (!Char.IsLetterOrDigit(c))
+                isValidLicensePlate = false;
+                throw new ValueOutOfRangeException(5f, 10f);
+            }
+            else
+            {
+                foreach (char c in i_LicensePlate)
                 {
-                    isValidLicensePlate = false;
+                    if (!Char.IsLetterOrDigit(c))
+                    {
+                        isValidLicensePlate = false;
+                        throw new FormatException("Invalid license plate. Please make sure the license plate consists of numbers and letters only.");
+                    }
                 }
             }
 
@@ -140,7 +146,7 @@ namespace Ex03
 
         public enum eCarColour
         {
-            Black,
+            Black = 1,
             White,
             Red, 
             Blue

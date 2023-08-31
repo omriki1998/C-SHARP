@@ -23,8 +23,9 @@ namespace Ex03
         public void InvokeLicenseTypeSetter(string i_LicenseType)
         {
             bool isValidLicenseType = Enum.TryParse(i_LicenseType, out eMotorcycleLicenseType o_ELicenseType);
+            bool isValidNum = int.TryParse(i_LicenseType, out int o_LicenseTypeNum);
 
-            if (!isValidLicenseType)
+            if (!isValidLicenseType || (isValidNum && !Enum.IsDefined(typeof(eMotorcycleLicenseType), o_ELicenseType)))
             {
                 throw new FormatException("Please enter a valid license type");
             }

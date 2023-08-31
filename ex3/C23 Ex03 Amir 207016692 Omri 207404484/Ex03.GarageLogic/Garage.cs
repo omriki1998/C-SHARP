@@ -13,37 +13,61 @@ namespace Ex03
             return m_VehiclesDict.ContainsKey(i_LicensePlate);
         }
 
-        public void PutNewVehicleInGarage(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber, GarageVehicle.eCarStatus i_CarStatus)
+        public void PutNewVehicleInGarage(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber)
         {
-            GarageVehicle garageVehicle = new GarageVehicle(i_Vehicle, i_OwnerName, i_OwnerPhoneNumber, i_CarStatus);
+            GarageVehicle garageVehicle = new GarageVehicle(i_Vehicle, i_OwnerName, i_OwnerPhoneNumber);
             m_VehiclesDict.Add(key: i_Vehicle.LicensePlate, value: garageVehicle); 
         }
 
         public void updateExistingVehicle(string i_LicensePlate)
         {
             GarageVehicle currentCarInGarage = m_VehiclesDict[i_LicensePlate];
-            currentCarInGarage.CarStatus = GarageVehicle.eCarStatus.Repair;
+            currentCarInGarage.CarStatus = GarageVehicle.eVehicleStatus.Repair;
         }
 
-        public List<string> GetListOfCarsInGarage(GarageVehicle.eCarStatus i_CarStatus)
+        public List<string> GetListOfCarsInGarage(string i_CarStatus)
         {
             List<string> CarsInGarageList = new List<string>();
-            
-            foreach(KeyValuePair<string, GarageVehicle> kvp in m_VehiclesDict)
+            bool isValidNum = int.TryParse(i_CarStatus, out int o_CarStatusInt);
+            bool isValidCarStatus = Enum.TryParse(i_CarStatus, out GarageVehicle.eVehicleStatus o_ECarStatus);
+
+            if (!isValidCarStatus || (isValidNum && !Enum.IsDefined(typeof(GarageVehicle.eVehicleStatus), o_ECarStatus)))
             {
-                if (kvp.Value.CarStatus == i_CarStatus)
+                throw new ArgumentException("Please enter a valid car status");
+            }
+            else
+            {
+                foreach (KeyValuePair<string, GarageVehicle> kvp in m_VehiclesDict)
                 {
-                    CarsInGarageList.Add(kvp.Key);
+
+                    if (kvp.Value.CarStatus == o_ECarStatus)
+                    {
+                        CarsInGarageList.Add(kvp.Key);
+                    }
                 }
             }
 
             return CarsInGarageList;
         }
 
-        public void ChangeVehicleStatus(string i_LicensePlate, GarageVehicle.eCarStatus i_CarStatus)
+        public void ChangeVehicleStatus(string i_LicensePlate, string i_VehicleStatus)
         {
+            if (!isVehicleInGarage(i_LicensePlate))
+            {
+                throw new ArgumentException("This vehicle is not in garage");
+            }
+            bool isValidVehicleStatus = Enum.TryParse(i_VehicleStatus, out GarageVehicle.eVehicleStatus o_EVehicleStatus);
+            bool isValidNum = int.TryParse(i_VehicleStatus, out int o_VehicleStatusNum);
+
+            if (!isValidVehicleStatus || (isValidNum && !Enum.IsDefined(typeof(GarageVehicle.eVehicleStatus), o_EVehicleStatus)))
+            {
+                throw new FormatException("Please enter a valid vehicle status");
+            }
+            else
+            {
             GarageVehicle currentVehicle = m_VehiclesDict[i_LicensePlate];
-            currentVehicle.CarStatus = i_CarStatus; 
+            currentVehicle.CarStatus = o_EVehicleStatus; 
+            }
         }
 
         public void InflateTiresToMax(string i_LicensePlate)
@@ -108,6 +132,7 @@ namespace Ex03
 
         public Vehicle GetVehicleByLicensePlate(string i_LicensePlate)
         {
+
             return m_VehiclesDict[i_LicensePlate].Vehicle;
         }
 

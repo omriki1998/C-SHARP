@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Ex03.GarageLogic;
+using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 
 namespace Ex03
 {
@@ -46,11 +46,11 @@ namespace Ex03
                                 validUserChoice = true;
                                 break;
                             case "2":
-                                displayListOfVehiclesInGarageMenu();
+                                displayListOfVehiclesInGarageMenu(i_Garage);
                                 validUserChoice = true;
                                 break;
                             case "3":
-                                displayChangeVehicleStatusMenu();
+                                displayChangeVehicleStatusMenu(i_Garage);
                                 validUserChoice = true;
                                 break;
                             case "4":
@@ -79,35 +79,90 @@ namespace Ex03
 
         private static void displayAddNewVehicleToGarageMenu(Garage i_Garage)
         {
-            addNewVehicle(i_Garage, "123445");
-            /*bool validInput = false;
-            Console.Clear();
+            bool validInput = false;
+            string userInput = string.Empty;
+
             while (!validInput)
             {
                 Console.WriteLine("Please enter the license plate for the desired vehicle: ");
-                string userInputLicensePlate = Console.ReadLine();
-                bool validLicensePlate = isValidLicensePlate(userInputLicensePlate);
-                if (!validLicensePlate)
+                userInput = Console.ReadLine();
+                try
                 {
-                    Console.Clear();
-                    Console.WriteLine("Please enter a valid license plate. (Should consist of letters and digits only, and be between 5-10 characters long)\n");
-                    continue;
+                    bool validLicensePlate = Vehicle.isValidLicensePlate(userInput);
+                    if (i_Garage.isVehicleInGarage(userInput))
+                    {
+                        i_Garage.updateExistingVehicle(userInput);
+                        Console.WriteLine("Vehicle exists in garage. Vehicle put into repair.");
+                    }
+                    else
+                    {
+                        addNewVehicle(i_Garage, userInput);
+                        Console.WriteLine("Vehicle added to garage for repair succesfully!");
+                    }
+                    validInput = true;
                 }
-                else
+                catch (Exception ex)
                 {
-                    addNewVehicle(i_Garage, userInputLicensePlate);
+                    Console.WriteLine(ex.Message);
                 }
-            }*/
+            }
         }
 
-        private static void displayListOfVehiclesInGarageMenu()
+        private static void displayListOfVehiclesInGarageMenu(Garage i_Garage)
         {
+            bool validInput = false;
+            List<string> licensePlates = new List<string>();
 
+            Console.WriteLine(String.Format("Please choose the status of cars that you wish to see or press Q to exit:\n" + //ADD Q OPTION
+            "1. Repair\n" +
+            "2. Done\n" +
+            "3. Paid"));
+            while (!validInput)
+            {
+                try
+                {
+                    licensePlates = i_Garage.GetListOfCarsInGarage(Console.ReadLine());
+                    validInput = true;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            
+            for (int i = 0; i < licensePlates.Count; i++)
+            {
+                Console.WriteLine(String.Format("{0}. {1}\n", i + 1, licensePlates[i]));
+            }
+            Console.WriteLine("Press enter to return to main menu");
+            Console.ReadLine();
+            displayMenu(i_Garage);
         }
 
-        private static void displayChangeVehicleStatusMenu()
+        private static void displayChangeVehicleStatusMenu(Garage i_Garage)
         {
-
+            Console.WriteLine("What is the license plate of your vehicle?");
+            string userLicensePlate = Console.ReadLine();
+            if (i_Garage.isVehicleInGarage(userLicensePlate))
+            {
+                Console.WriteLine("Please choose the new status:\n" +
+                    "1. Repair\n" +
+                    "2. Done\n" +
+                    "3. Paid");
+                string newStatus = Console.ReadLine();
+                try
+                {
+                    i_Garage.ChangeVehicleStatus(userLicensePlate, newStatus);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            else
+            {
+                //Vehicle not in garage exception.. How to send? Need to add. 
+            }
         }
 
         private static void displayInflateTireMenu()
@@ -132,42 +187,79 @@ namespace Ex03
 
         private static void addNewVehicle(Garage i_Garage, string i_LicensePlate)
         {
-            if (i_Garage.isVehicleInGarage(i_LicensePlate))
+            Vehicle currentVehicle = null;
+            bool isValidInput = false;
+            string ownerName = String.Empty;
+            string ownerPhoneNumber = String.Empty;
+
+            Console.WriteLine(String.Format("Please choose one of the following vehicles:\n" +
+                "1. FuelCar\n" +
+                "2. FuelMotorcycle\n" +
+                "3. ElectricCar\n" +
+                "4. ElectricMotorcycle\n" +
+                "5. Lorry"));
+            while (!isValidInput)
             {
-                i_Garage.updateExistingVehicle(i_LicensePlate);
-            }
-            else
-            {
-                Vehicle currentVehicle = new FuelCar();
-                foreach(KeyValuePair<string, Action<string>> kvp in currentVehicle.QuestionsToCreateNewVehicle)
+                try
                 {
-                    bool validArgument = false;
+                    currentVehicle = VehicleFactory.CreateVehicle(Console.ReadLine());
+                    isValidInput = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            foreach(KeyValuePair<string, Action<string>> kvp in currentVehicle.QuestionsToCreateNewVehicle)
+            {
+                isValidInput = false;
                     
-                    Console.WriteLine(kvp.Key);
-                    while (!validArgument)
+                Console.WriteLine(kvp.Key);
+                while (!isValidInput)
+                {
+                    try
                     {
-                        try
-                        {
-                            kvp.Value(Console.ReadLine());
-                            validArgument = true;
-                        }
-                        catch(Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
+                        kvp.Value(Console.ReadLine());
+                        isValidInput = true;
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
                     }
                 }
             }
+
+            Console.WriteLine("Please enter the name of the owner: ");
+            isValidInput = false;
+            while (!isValidInput)
+            {
+                try
+                {
+                    ownerName = GarageVehicle.isValidOwnerNameAndAssign(Console.ReadLine());
+                    isValidInput = true;
+                } 
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            Console.WriteLine("Please enter the phone number of the owner: ");
+            isValidInput = false;
+            while (!isValidInput)
+            {
+                try
+                {
+                    ownerPhoneNumber = GarageVehicle.isValidOwnerPhoneNumberAndAssign(Console.ReadLine());
+                    isValidInput = true;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            i_Garage.PutNewVehicleInGarage(currentVehicle, ownerName, ownerPhoneNumber);
         }
-
-        /*private static Vehicle createNewVehicle()
-        {
-            string[] vehicleDetails = getVehicleDetailsFromUser();
-            Tire vehicleTire = createNewTire();
-            Vehicle newVehicle = new Vehicle(vehicleDetails[0], vehicleDetails[1], float.Parse(vehicleDetails[2]), vehicleTire, byte.Parse(vehicleDetails[3]));
-
-            return newVehicle;
-        }*/
 
         private static Tire createNewTire()
         {
@@ -215,11 +307,11 @@ namespace Ex03
             Lorry lorry = new Lorry("MAN", "66666666", 100f, lorryTire, FuelVehicle.eFuelType.Soler, true, 100f);
 
 
-            garage.PutNewVehicleInGarage(ec, "Omri", "0544560297", GarageVehicle.eCarStatus.Repair);
-            garage.PutNewVehicleInGarage(em, "Amir", "0544921380", GarageVehicle.eCarStatus.Repair);
-            garage.PutNewVehicleInGarage(fc, "Aa", "05050", GarageVehicle.eCarStatus.Repair);
-            garage.PutNewVehicleInGarage(fm, "Tonali", "050500002220", GarageVehicle.eCarStatus.Repair);
-            garage.PutNewVehicleInGarage(lorry, "Steve", "050001124", GarageVehicle.eCarStatus.Repair);
+            garage.PutNewVehicleInGarage(ec, "Omri", "0544560297", GarageVehicle.eVehicleStatus.Repair);
+            garage.PutNewVehicleInGarage(em, "Amir", "0544921380", GarageVehicle.eVehicleStatus.Repair);
+            garage.PutNewVehicleInGarage(fc, "Aa", "05050", GarageVehicle.eVehicleStatus.Repair);
+            garage.PutNewVehicleInGarage(fm, "Tonali", "050500002220", GarageVehicle.eVehicleStatus.Repair);
+            garage.PutNewVehicleInGarage(lorry, "Steve", "050001124", GarageVehicle.eVehicleStatus.Repair);
             GarageVehicle v = garage.GetVehicleData("12345678");
             GarageVehicle vv = garage.GetVehicleData("00000000");
             GarageVehicle vvv = garage.GetVehicleData("87654321");
