@@ -76,7 +76,7 @@ namespace Ex03
             string toOut = string.Format("Vehicle properties: \n{0}" +
                 "Owner name: {1}\n" +
                 "Owner phone number: {2}\n" +
-                "Car status: {3}\n", m_Vehicle.ToString(), r_OwnerName, r_OwnerPhoneNumber, m_VehicleStatus);
+                "Car status: {3}\n", this.Vehicle.ToString(), r_OwnerName, r_OwnerPhoneNumber, m_VehicleStatus);
 
             return toOut;
         }

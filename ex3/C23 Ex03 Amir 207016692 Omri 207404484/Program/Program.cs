@@ -39,41 +39,55 @@ namespace Ex03
                         "6. Charge an electric vehicle\n" +
                         "7. Display full details of a specific vehicle\n"));
 
-                        switch (Console.ReadLine())
-                        {
-                            case "1": 
-                                displayAddNewVehicleToGarageMenu(i_Garage);
-                                validUserChoice = true;
-                                break;
-                            case "2":
-                                displayListOfVehiclesInGarageMenu(i_Garage);
-                                validUserChoice = true;
-                                break;
-                            case "3":
-                                displayChangeVehicleStatusMenu(i_Garage);
-                                validUserChoice = true;
-                                break;
-                            case "4":
-                                displayInflateTireMenu();
-                                validUserChoice = true;
-                                break;
-                            case "5":
-                                displayFillFuelMenu();
-                                validUserChoice = true;
-                                break;
-                            case "6":
-                                displayChargeBatteryMenu();
-                                validUserChoice = true;
-                                break;
-                            case "7":
-                                displayFullDetailsOfVehicleMenu();
-                                validUserChoice = true;
-                                break;
-                            default:
-                                Console.Clear();
-                                Console.WriteLine("Option selected is invalid! \n");
-                                continue;
-                        }
+                try
+                {
+
+                    switch (Console.ReadLine())
+                    {
+                        case "1": 
+                            displayAddNewVehicleToGarageMenu(i_Garage);
+                            validUserChoice = true;
+                            break;
+                        case "2":
+                            i_Garage.ValidatesGarageIsNotEmpty();
+                            displayListOfVehiclesInGarageMenu(i_Garage);
+                            validUserChoice = true;
+                            break;
+                        case "3":
+                            i_Garage.ValidatesGarageIsNotEmpty();
+                            displayChangeVehicleStatusMenu(i_Garage); 
+                            validUserChoice = true;
+                            break;
+                        case "4":
+                            i_Garage.ValidatesGarageIsNotEmpty();
+                            displayInflateTireMenu(i_Garage);
+                            validUserChoice = true;
+                            break;
+                        case "5":
+                            i_Garage.ValidatesGarageIsNotEmpty();
+                            displayFillFuelMenu(i_Garage);
+                            validUserChoice = true;
+                            break;
+                        case "6":
+                            i_Garage.ValidatesGarageIsNotEmpty();
+                            displayChargeBatteryMenu(i_Garage);
+                            validUserChoice = true;
+                            break;
+                        case "7":
+                            i_Garage.ValidatesGarageIsNotEmpty();
+                            displayFullDetailsOfVehicleMenu(i_Garage);
+                            validUserChoice = true;
+                            break;
+                        default:
+                            Console.Clear();
+                            Console.WriteLine("Option selected is invalid! \n");
+                            continue;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -89,7 +103,7 @@ namespace Ex03
                 try
                 {
                     bool validLicensePlate = Vehicle.isValidLicensePlate(userInput);
-                    if (i_Garage.isVehicleInGarage(userInput))
+                    if (i_Garage.IsVehicleInGarage(userInput))
                     {
                         i_Garage.updateExistingVehicle(userInput);
                         Console.WriteLine("Vehicle exists in garage. Vehicle put into repair.");
@@ -141,48 +155,133 @@ namespace Ex03
 
         private static void displayChangeVehicleStatusMenu(Garage i_Garage)
         {
-            Console.WriteLine("What is the license plate of your vehicle?");
-            string userLicensePlate = Console.ReadLine();
-            if (i_Garage.isVehicleInGarage(userLicensePlate))
+            bool isValidInput = false;
+            bool isValidLicensePlate = false;
+            string userLicensePlate = String.Empty;
+
+            while (!isValidInput)
             {
-                Console.WriteLine("Please choose the new status:\n" +
-                    "1. Repair\n" +
-                    "2. Done\n" +
-                    "3. Paid");
-                string newStatus = Console.ReadLine();
-                try
+                try 
                 {
+                    if(!isValidLicensePlate)
+                    { 
+                        Console.WriteLine("What is the license plate of your vehicle?");
+                        userLicensePlate = Console.ReadLine();
+                        i_Garage.ValidateVehicleInGarage(userLicensePlate);
+                        isValidLicensePlate = true;
+                    }
+                    Console.WriteLine("Please choose the new status:\n" +
+                        "1. Repair\n" +
+                        "2. Done\n" +
+                        "3. Paid");
+                    string newStatus = Console.ReadLine();
                     i_Garage.ChangeVehicleStatus(userLicensePlate, newStatus);
+                    isValidInput = true;
+                    Console.WriteLine("Vehicle status updated succesfully");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
-            else
+        }
+
+        private static void displayInflateTireMenu(Garage i_garage)
+        {
+            bool inflateSucceeded = false;
+            Console.WriteLine("Please enter the desired vehicle license plate: ");
+
+            while (!inflateSucceeded)
             {
-                //Vehicle not in garage exception.. How to send? Need to add. 
+                string userInput = Console.ReadLine();
+                try
+                {
+                    i_garage.ValidateVehicleInGarage(userInput);
+                    i_garage.InflateTiresToMax(userInput);
+                    Console.WriteLine("Vehicle tires inflated succesfully");
+                    inflateSucceeded = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 
-        private static void displayInflateTireMenu()
+        private static void displayFillFuelMenu(Garage i_Garage)
         {
+            bool isValidLicensePlate = false;
+            bool isValidFuelType = false;
+            bool isValidInput = false;
+            string userLicensePlate = String.Empty;
 
+            Console.WriteLine("What is the license plate of your vehicle?");
+            while (!isValidInput)
+            {
+                try
+                {
+                    if (!isValidLicensePlate)
+                    {
+                        userLicensePlate = Console.ReadLine();
+                        i_Garage.ValidateVehicleInGarage(userLicensePlate);
+                        isValidLicensePlate = true;
+                    }
+                    if (!isValidFuelType)
+                    {
+                        Console.WriteLine("Please choose the fuel type:\n" +
+                            "1. Octan95\n" +
+                            "2. Octan96\n" +
+                            "3. Octan98\n" +
+                            "4. Soler");
+                        string fuelType = Console.ReadLine();
+                        Console.WriteLine("Please enter the amount of litres to fill: ");
+                        i_Garage.AddFuel(userLicensePlate, fuelType, Console.ReadLine());
+                    }
+                    Console.WriteLine("Operation finished succesfully");
+                    isValidInput = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
-        private static void displayFillFuelMenu()
+        private static void displayChargeBatteryMenu(Garage i_Garage)
         {
+            bool isValidLicensePlate = false;
+            bool isValidInput = false;
+            string userLicensePlate = String.Empty;
 
+            Console.WriteLine("What is the license plate of your vehicle?");
+            while (!isValidInput)
+            {
+                try
+                {
+                    if (!isValidLicensePlate)
+                    {
+                        userLicensePlate = Console.ReadLine();
+                        i_Garage.ValidateVehicleInGarage(userLicensePlate);
+                        isValidLicensePlate = true;
+                    }
+                    Console.WriteLine("Please enter the amount of energy to charge in minutes: ");
+                    i_Garage.ChargeBattery(userLicensePlate, Console.ReadLine());
+                    Console.WriteLine("Operation finished succesfully");
+                    isValidInput = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
         }
 
-        private static void displayChargeBatteryMenu()
+        private static void displayFullDetailsOfVehicleMenu(Garage i_Garage)
         {
-
-        }
-
-        private static void displayFullDetailsOfVehicleMenu()
-        {
-
+            Console.WriteLine("Please enter license plate:");
+            string userLicensePlate = Console.ReadLine();
+            GarageVehicle currentVehicle = i_Garage.GetVehicleData(userLicensePlate);
+            Console.WriteLine(currentVehicle.ToString());
         }
 
         private static void addNewVehicle(Garage i_Garage, string i_LicensePlate)
@@ -224,7 +323,7 @@ namespace Ex03
                     }
                     catch(Exception ex)
                     {
-                        Console.WriteLine(ex.ToString());
+                        Console.WriteLine(ex.Message);
                     }
                 }
             }
@@ -268,62 +367,10 @@ namespace Ex03
             return newTire;
         }
 
-        private static string[] getVehicleDetailsFromUser()
-        {
-            string[] newVehicleDetails = new string[7];
-            string modelName = String.Empty;
-            string licensePlate = String.Empty;
-            string energyPrecentage = String.Empty;
-            string tireManufacturer = String.Empty;
-            string tirePressure = String.Empty;
-            string maxTirePressure = String.Empty;
-            string numOfTires = String.Empty;
-
-            string msgToUser = String.Format("Model: {0}\n" +
-                "License plate: {1}\n" +
-                "Percentage of energy: {2}\n" +
-                "Tire manufacturer: {3}\n" +
-                "Tire pressure: {4}\n" +
-                "Maximum tire pressure: {5}\n" +
-                "Number of tires: {6}\n", modelName, licensePlate, energyPrecentage, tireManufacturer, tirePressure, maxTirePressure, numOfTires);
-
-            return newVehicleDetails;
-        }
-
         private static void DisplayListOfVehiclesInGarage(Garage i_Garage, string i_LicensePlate)
         {
             GarageVehicle garageVehicle = i_Garage.GetVehicleData(i_LicensePlate);
             Console.WriteLine(garageVehicle.ToString());
-           
-            /*
-            Tire carTire = new Tire("Michlen", 32, 32);
-            Tire motorcycleTire = new Tire("Michlen", 30, 30);
-            Tire lorryTire = new Tire("Michlen", 27, 27);
-
-            ElectricCar ec = new ElectricCar("Tesla", "12345678", 100f, carTire, Vehicle.eCarColour.Black, Vehicle.eNumOfDoors.Four);
-            ElectricMotorcycle em = new ElectricMotorcycle("Dukati", "00000000", 100f, motorcycleTire, Vehicle.eMotorcycleLicenseType.A1, 250);
-            FuelCar fc = new FuelCar("Subaru XV", "87654321", 100f, carTire, FuelVehicle.eFuelType.Octan96, Vehicle.eCarColour.Red, Vehicle.eNumOfDoors.Five);
-            FuelMotorcycle fm = new FuelMotorcycle("KTM", "11122234", 100f, motorcycleTire, FuelVehicle.eFuelType.Octan95, Vehicle.eMotorcycleLicenseType.AB, 500);
-            Lorry lorry = new Lorry("MAN", "66666666", 100f, lorryTire, FuelVehicle.eFuelType.Soler, true, 100f);
-
-
-            garage.PutNewVehicleInGarage(ec, "Omri", "0544560297", GarageVehicle.eVehicleStatus.Repair);
-            garage.PutNewVehicleInGarage(em, "Amir", "0544921380", GarageVehicle.eVehicleStatus.Repair);
-            garage.PutNewVehicleInGarage(fc, "Aa", "05050", GarageVehicle.eVehicleStatus.Repair);
-            garage.PutNewVehicleInGarage(fm, "Tonali", "050500002220", GarageVehicle.eVehicleStatus.Repair);
-            garage.PutNewVehicleInGarage(lorry, "Steve", "050001124", GarageVehicle.eVehicleStatus.Repair);
-            GarageVehicle v = garage.GetVehicleData("12345678");
-            GarageVehicle vv = garage.GetVehicleData("00000000");
-            GarageVehicle vvv = garage.GetVehicleData("87654321");
-            GarageVehicle vvvv = garage.GetVehicleData("11122234");
-            GarageVehicle vvvvv = garage.GetVehicleData("66666666");
-
-            Console.WriteLine(v.ToString());
-            Console.WriteLine(vv.ToString());
-            Console.WriteLine(vvv.ToString());
-            Console.WriteLine(vvvv.ToString());
-            Console.WriteLine(vvvvv.ToString());
-            */
         }
     }
 }

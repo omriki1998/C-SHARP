@@ -8,9 +8,26 @@ namespace Ex03
     {
         public Dictionary<string, GarageVehicle> m_VehiclesDict = new Dictionary<string, GarageVehicle>();
 
-        public bool isVehicleInGarage(string i_LicensePlate)
+        public bool IsVehicleInGarage(string i_LicensePlate)
         {
             return m_VehiclesDict.ContainsKey(i_LicensePlate);
+        }
+
+        public void ValidatesGarageIsNotEmpty()
+        {
+            if(this.m_VehiclesDict.Count == 0)
+            {
+                throw new ArgumentException("Garage is currently empty");
+            }
+        }
+
+        public void ValidateVehicleInGarage(string i_LicensePlate)
+        {
+            if (!m_VehiclesDict.ContainsKey(i_LicensePlate))
+            {
+                throw new ArgumentException("License plate given does not exist in our garage. Please enter a valid license plate:");
+            }
+
         }
 
         public void PutNewVehicleInGarage(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber)
@@ -52,7 +69,7 @@ namespace Ex03
 
         public void ChangeVehicleStatus(string i_LicensePlate, string i_VehicleStatus)
         {
-            if (!isVehicleInGarage(i_LicensePlate))
+            if (!IsVehicleInGarage(i_LicensePlate))
             {
                 throw new ArgumentException("This vehicle is not in garage");
             }
@@ -80,7 +97,7 @@ namespace Ex03
             }
         } 
         
-        public void AddFuel(string i_LicensePlate, FuelVehicle.eFuelType i_FuelType, float i_LitresToFill)
+        public void AddFuel(string i_LicensePlate, string i_FuelType, string i_LitresToFill)
         {
 
             FuelVehicle currentVehicle = GetVehicleByLicensePlate(i_LicensePlate) as FuelVehicle;
@@ -94,33 +111,34 @@ namespace Ex03
                 {
                     currentVehicle.FillFuel(i_FuelType, i_LitresToFill);
                 }
-                catch(ArgumentException ex)
+                catch 
                 {
-                    //Fuel type does not match
-                }
-                catch(ValueOutOfRangeException ex)
-                {
-                    //Too much fuel to fill 
+                    throw;
                 }
             }
         }
 
-        public void ChargeBattery(string i_LicensePlate, float i_MinutesToCharge)
+        public void ChargeBattery(string i_LicensePlate, string i_MinutesToCharge)
         {
+            bool isValidFloat = float.TryParse(i_MinutesToCharge, out float o_MinutesToCharge);
             ElectricVehicle currentVehicle = GetVehicleByLicensePlate(i_LicensePlate) as ElectricVehicle;
             if (currentVehicle == null)
             {
                 throw new ArgumentException("This is not an electricity powered vehicle.");
             }
+            else if (!isValidFloat)
+            {
+                throw new FormatException("Please enter a valid amount of minutes");
+            }
             else
             {
                 try
                 {
-                    currentVehicle.ChargeBattery(i_MinutesToCharge / 60);
+                    currentVehicle.ChargeBattery(o_MinutesToCharge / 60);
                 }
                 catch 
                 {
-                    //Too much power to fill 
+                    throw;
                 }
             }
         }
@@ -132,7 +150,6 @@ namespace Ex03
 
         public Vehicle GetVehicleByLicensePlate(string i_LicensePlate)
         {
-
             return m_VehiclesDict[i_LicensePlate].Vehicle;
         }
 

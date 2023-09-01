@@ -9,21 +9,24 @@ namespace Ex03
     {
         protected string m_ModelName = null;
         protected string m_LicensePlate = null;
-        protected float m_EnergyRemainingPrecentage = 0f;
+        protected float m_EnergyRemainingPrecentage = 0f; // of engine
+        protected readonly float r_MaxEnergyCapacity = 0f; // of engine
+        protected float m_EnergyLevel = 0; // of engine
         protected Tire[] m_Tires = null;
         protected Tire m_TireType = new Tire();
         protected readonly byte r_NumOfTires;
         public readonly Dictionary<string, Action<string>> r_QuestionsToCreateNewVehicle = new Dictionary<string, Action<string>>();
 
 
-        public Vehicle(byte i_NumOfTires, float i_MaxPressure)
+        public Vehicle(byte i_NumOfTires, float i_MaxPressure, float i_MaxEnergyCapacity)
         {
+            r_NumOfTires = i_NumOfTires;
+            r_MaxEnergyCapacity = i_MaxEnergyCapacity;
+            m_TireType.MaximumPressure = i_MaxPressure;
             r_QuestionsToCreateNewVehicle.Add("What is your vehicle model name? ", InvokeModelNameSetter);
             r_QuestionsToCreateNewVehicle.Add("What is your license plate? ", InvokeLicensePlateSetter);
             r_QuestionsToCreateNewVehicle.Add("What is the energy precentage of the vehicle? ", InvokeEnergyRemainingPrecentageSetter);
-            m_TireType.MaximumPressure = i_MaxPressure;
             r_QuestionsToCreateNewVehicle = r_QuestionsToCreateNewVehicle.Union(m_TireType.r_QuestionsToCreateNewTire).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            r_NumOfTires = i_NumOfTires;
         }
 
         internal void SetTires(byte i_NumOfTires)
@@ -57,7 +60,7 @@ namespace Ex03
             this.ModelName = i_ModelName;
         }
 
-        public void InvokeEnergyRemainingPrecentageSetter(string i_EnergyRemainingPrecentage)
+        public void InvokeEnergyRemainingPrecentageSetter(string i_EnergyRemainingPrecentage) // of engine
         {
             bool isValidNumber = float.TryParse(i_EnergyRemainingPrecentage, out float o_EnergyRemainingPrecentage);
 
@@ -72,6 +75,7 @@ namespace Ex03
             else
             {
                 this.EnergyRemainingPrecentage = o_EnergyRemainingPrecentage;
+                this.m_EnergyLevel = (this.EnergyRemainingPrecentage * this.r_MaxEnergyCapacity) / 100;
             }
         }
 
@@ -97,7 +101,7 @@ namespace Ex03
             set { m_ModelName = value; }
         }
 
-        internal float EnergyRemainingPrecentage
+        public float EnergyRemainingPrecentage // of engine
         {
             get { return m_EnergyRemainingPrecentage; }
             set { m_EnergyRemainingPrecentage = value; }
@@ -166,7 +170,7 @@ namespace Ex03
                 "License plate: {1}\n" +
                 "Energy remaining percentage: {2}\n" +
                 "Number of tires: {3}\n" +
-                "Tire Type: \n{4}", m_ModelName, m_LicensePlate, m_EnergyRemainingPrecentage, r_NumOfTires, tireArrayToString());
+                "\nTire Type: \n{4}\n", m_ModelName, m_LicensePlate, m_EnergyRemainingPrecentage, r_NumOfTires, tireArrayToString());
 
             return toOut;
         }

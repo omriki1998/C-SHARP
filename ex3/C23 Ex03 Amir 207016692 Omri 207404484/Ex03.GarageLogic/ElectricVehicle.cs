@@ -5,11 +5,11 @@ namespace Ex03
 {
     public class ElectricVehicle : Vehicle
     {
-        protected float m_BatteryHoursRemaining = 0f;
+        protected float m_BatteryHoursRemaining;
         protected float m_MaximumHoursOfChargeOnBattery = 0f;
 
         internal ElectricVehicle(byte i_NumOfTires, byte i_MaxTirePressure, float i_MaximumHoursOfChargeOnBattery)
-            : base(i_NumOfTires, i_MaxTirePressure)
+            : base(i_NumOfTires, i_MaxTirePressure, i_MaximumHoursOfChargeOnBattery)
         {
             m_MaximumHoursOfChargeOnBattery = i_MaximumHoursOfChargeOnBattery;
             m_BatteryHoursRemaining =  m_MaximumHoursOfChargeOnBattery * m_EnergyRemainingPrecentage;
@@ -17,13 +17,14 @@ namespace Ex03
 
         internal void ChargeBattery(float i_NumberOfHoursToCharge)
         {
-            if(i_NumberOfHoursToCharge + m_BatteryHoursRemaining > m_MaximumHoursOfChargeOnBattery)
+            if(i_NumberOfHoursToCharge + this.BatteryHoursRemaining > this.MaximumHoursOfChargeOnBattery)
             {
-                throw new ValueOutOfRangeException(0, MaximumHoursOfChargeOnBattery);
+                throw new ValueOutOfRangeException(0, (this.MaximumHoursOfChargeOnBattery - this.BatteryHoursRemaining) * 60);
             }
             else
             {
-                m_EnergyRemainingPrecentage += i_NumberOfHoursToCharge / m_MaximumHoursOfChargeOnBattery;
+                this.EnergyRemainingPrecentage += (i_NumberOfHoursToCharge / this.MaximumHoursOfChargeOnBattery) * 100;
+                this.BatteryHoursRemaining = (this.EnergyRemainingPrecentage * this.MaximumHoursOfChargeOnBattery) / 100;
             }
         }
 
@@ -43,11 +44,12 @@ namespace Ex03
             {
                 this.BatteryHoursRemaining = o_BaterryHoursRemaining;
             }
-        }
-        */
+        }*/
+        
         internal float BatteryHoursRemaining 
         {
-            get { return m_BatteryHoursRemaining; }
+            get { return (base.EnergyRemainingPrecentage * this.MaximumHoursOfChargeOnBattery) / 100; }
+            set { m_BatteryHoursRemaining = value; }
         }
 
         internal float MaximumHoursOfChargeOnBattery
