@@ -9,7 +9,10 @@ namespace Ex03
 
         internal ValueOutOfRangeException(float i_MinCapacity, float i_MaxCapacity)
             : base(string.Format("Value out of range exception. Min value is: {0}, max value is: {1}", i_MinCapacity, i_MaxCapacity))
-                  { }
+        {
+            m_MaxValue = i_MaxCapacity;
+            m_MinValue = i_MinCapacity;
+        }
 
         internal float MaxValue
         {

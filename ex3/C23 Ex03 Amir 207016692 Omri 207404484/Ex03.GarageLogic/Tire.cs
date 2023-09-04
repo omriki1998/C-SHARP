@@ -5,19 +5,18 @@ namespace Ex03
 {
     public class Tire
     {
+        internal readonly Dictionary<string, Action<string>> r_QuestionsToCreateNewTire = new Dictionary<string, Action<string>>();
         protected string m_ManufacturerName = null;
         protected float m_TirePressure = 0f;
         protected float m_MaximumPressure = 0f;
-        public readonly Dictionary<string, Action<string>> r_QuestionsToCreateNewTire = new Dictionary<string, Action<string>>();
 
-
-        public Tire()
+        internal Tire()
         {
             r_QuestionsToCreateNewTire.Add("What is your tire manufacturer? ", InvokeTireManufacturerSetter);
             r_QuestionsToCreateNewTire.Add("What is your current tire pressure? ", InvokeTirePressureSetter);
         }
-        
-        public void InvokeTirePressureSetter(string i_TirePressure)
+
+        internal void InvokeTirePressureSetter(string i_TirePressure)
         {
             bool isValidNumber = float.TryParse(i_TirePressure, out float o_TirePressure);
 
@@ -35,7 +34,7 @@ namespace Ex03
             }
         }
 
-        public void InvokeTireManufacturerSetter(string i_TireManufacturer)
+        internal void InvokeTireManufacturerSetter(string i_TireManufacturer)
         {
             if(i_TireManufacturer.Length == 0)
             {
@@ -79,9 +78,13 @@ namespace Ex03
 
         public override string ToString()
         {
-            string toOut = String.Format("Manufacturer name: {0}\n" +
+            string toOut = string.Format(
+                "Manufacturer name: {0}\n" +
                 "Tire pressure: {1}\n" +
-                "Maximum pressure: {2}\n", m_ManufacturerName, m_TirePressure, m_MaximumPressure);
+                "Maximum pressure: {2}\n", 
+                m_ManufacturerName,
+                m_TirePressure, 
+                m_MaximumPressure);
 
             return toOut;
         }

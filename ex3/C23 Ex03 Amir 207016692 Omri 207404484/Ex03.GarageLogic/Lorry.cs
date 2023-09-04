@@ -3,25 +3,25 @@ using System.Collections.Generic;
 
 namespace Ex03
 {
-    public class Lorry : FuelVehicle
+    internal class Lorry : Vehicle
     {
-        protected bool m_IsColdTransporter = false;
-        protected float m_VolumeOfCargo = 0f;
         protected const float k_MaximumFuelCapacityLitres = 130f;
         protected const byte k_NumOfTires = 12;
         protected const byte k_TireMaxPressure = 27;
         protected const float k_MaxVolumeOfCargo = 100000f;
+        protected bool m_IsColdTransporter = false;
+        protected float m_VolumeOfCargo = 0f;
 
-
-        public Lorry () 
-            : base(k_NumOfTires, k_TireMaxPressure, k_MaximumFuelCapacityLitres)
+        internal Lorry(string i_LicensePlate) : base(i_LicensePlate, k_NumOfTires, k_TireMaxPressure)
         {
             r_QuestionsToCreateNewVehicle.Add("The lorry has cold transportation? (true/false)", InvokeIsColdTransporterSetter);
             r_QuestionsToCreateNewVehicle.Add("What is the volume of cargo in litres?", InvokeVolumeOfCargo);
-            base.SetTires(k_NumOfTires);
+            Engine = new FuelEngine(k_MaximumFuelCapacityLitres);
+            SetTires(k_NumOfTires);
+            AddKeyValPairsToDict(m_Enigne.r_QuestionsToCreateNewEngine);
         }
 
-        public void InvokeIsColdTransporterSetter(string i_BoolValue)
+        internal void InvokeIsColdTransporterSetter(string i_BoolValue)
         {
             bool isValid = bool.TryParse(i_BoolValue, out bool o_BoolValue);
 
@@ -33,10 +33,9 @@ namespace Ex03
             {
                 m_IsColdTransporter = o_BoolValue;
             }
-
         }
 
-        public void InvokeVolumeOfCargo(string i_VolOfCargo)
+        internal void InvokeVolumeOfCargo(string i_VolOfCargo)
         {
             bool isValidFloat = float.TryParse(i_VolOfCargo, out float o_VolumeOfCargo);
 
@@ -50,27 +49,31 @@ namespace Ex03
             }
             else
             {
-                m_VolumeOfCargo = o_VolumeOfCargo;
+                this.VolumeOfCargo = o_VolumeOfCargo;
             }
         }
 
-        public bool IsColdTransporter
+        internal bool IsColdTransporter
         {
-            get { return m_IsColdTransporter; }
-            set { m_IsColdTransporter = value; }
+            get { return this.m_IsColdTransporter; }
+            set { this.m_IsColdTransporter = value; }
         }
 
-        public float VolumeOfCargo
+        internal float VolumeOfCargo
         {
             get { return m_VolumeOfCargo; }
-            set { m_VolumeOfCargo = value; }
+            set { this.m_VolumeOfCargo = value; }
         }
 
         public override string ToString()
         {
-            string lorryString = string.Format("{0}\n" +
+            string lorryString = string.Format(
+                "{0}\n" +
                 "Lorry is cold transport: {1}\n" +
-                "Volume of cargo: {2}\n", base.ToString(), m_IsColdTransporter, m_VolumeOfCargo);
+                "Volume of cargo: {2}\n", 
+                base.ToString(), 
+                this.IsColdTransporter, 
+                this.VolumeOfCargo);
 
             return lorryString;
         }

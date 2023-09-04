@@ -4,9 +4,9 @@ namespace Ex03
 {
     public class GarageVehicle
     {
-        private Vehicle m_Vehicle;
-        private readonly string r_OwnerName = null;
         private readonly string r_OwnerPhoneNumber = null;
+        private readonly string r_OwnerName = null;
+        private Vehicle m_Vehicle;
         private eVehicleStatus m_VehicleStatus;
 
         public GarageVehicle(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber)
@@ -73,10 +73,15 @@ namespace Ex03
 
         public override string ToString()
         {
-            string toOut = string.Format("Vehicle properties: \n{0}" +
+            string toOut = string.Format(
+                "Vehicle properties: \n{0}" +
                 "Owner name: {1}\n" +
                 "Owner phone number: {2}\n" +
-                "Car status: {3}\n", this.Vehicle.ToString(), r_OwnerName, r_OwnerPhoneNumber, m_VehicleStatus);
+                "Car status: {3}\n", 
+                this.Vehicle.ToString(),
+                r_OwnerName, 
+                r_OwnerPhoneNumber, 
+                m_VehicleStatus);
 
             return toOut;
         }

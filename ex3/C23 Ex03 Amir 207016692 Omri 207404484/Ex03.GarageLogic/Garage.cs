@@ -25,9 +25,8 @@ namespace Ex03
         {
             if (!m_VehiclesDict.ContainsKey(i_LicensePlate))
             {
-                throw new ArgumentException("License plate given does not exist in our garage. Please enter a valid license plate:");
+                throw new ArgumentException("License plate given does not exist in our garage");
             }
-
         }
 
         public void PutNewVehicleInGarage(Vehicle i_Vehicle, string i_OwnerName, string i_OwnerPhoneNumber)
@@ -48,7 +47,14 @@ namespace Ex03
             bool isValidNum = int.TryParse(i_CarStatus, out int o_CarStatusInt);
             bool isValidCarStatus = Enum.TryParse(i_CarStatus, out GarageVehicle.eVehicleStatus o_ECarStatus);
 
-            if (!isValidCarStatus || (isValidNum && !Enum.IsDefined(typeof(GarageVehicle.eVehicleStatus), o_ECarStatus)))
+            if (i_CarStatus.Equals("All") || (isValidNum && o_CarStatusInt == 4))
+            {
+                foreach (KeyValuePair<string, GarageVehicle> kvp in m_VehiclesDict)
+                {
+                    CarsInGarageList.Add(kvp.Key);
+                }
+            }
+            else if (!isValidCarStatus || (isValidNum && !Enum.IsDefined(typeof(GarageVehicle.eVehicleStatus), o_ECarStatus)))
             {
                 throw new ArgumentException("Please enter a valid car status");
             }
@@ -56,7 +62,6 @@ namespace Ex03
             {
                 foreach (KeyValuePair<string, GarageVehicle> kvp in m_VehiclesDict)
                 {
-
                     if (kvp.Value.CarStatus == o_ECarStatus)
                     {
                         CarsInGarageList.Add(kvp.Key);
@@ -73,6 +78,7 @@ namespace Ex03
             {
                 throw new ArgumentException("This vehicle is not in garage");
             }
+
             bool isValidVehicleStatus = Enum.TryParse(i_VehicleStatus, out GarageVehicle.eVehicleStatus o_EVehicleStatus);
             bool isValidNum = int.TryParse(i_VehicleStatus, out int o_VehicleStatusNum);
 
@@ -96,14 +102,19 @@ namespace Ex03
                 currentVehicleTire.InflateTire(currentVehicleTire.MaximumPressure - currentVehicleTire.TirePressure);
             }
         } 
-        
+
         public void AddFuel(string i_LicensePlate, string i_FuelType, string i_LitresToFill)
         {
+            bool isValidFloat = float.TryParse(i_LitresToFill, out float o_AmountOfEnergyToFill);
+            FuelEngine currentVehicle = GetVehicleByLicensePlate(i_LicensePlate).Engine as FuelEngine;
 
-            FuelVehicle currentVehicle = GetVehicleByLicensePlate(i_LicensePlate) as FuelVehicle;
             if (currentVehicle == null)
             {
-                throw new ArgumentException("This is not a fuel powered vehicle.");
+                throw new WrongEngineTypeException("fuel", "electricity");
+            }
+            else if (!isValidFloat)
+            {
+                throw new FormatException("Please enter a valid amount of litres to fill");
             }
             else
             {
@@ -111,7 +122,7 @@ namespace Ex03
                 {
                     currentVehicle.FillFuel(i_FuelType, i_LitresToFill);
                 }
-                catch 
+                catch
                 {
                     throw;
                 }
@@ -121,10 +132,10 @@ namespace Ex03
         public void ChargeBattery(string i_LicensePlate, string i_MinutesToCharge)
         {
             bool isValidFloat = float.TryParse(i_MinutesToCharge, out float o_MinutesToCharge);
-            ElectricVehicle currentVehicle = GetVehicleByLicensePlate(i_LicensePlate) as ElectricVehicle;
+            ElectricEngine currentVehicle = GetVehicleByLicensePlate(i_LicensePlate).Engine as ElectricEngine;
             if (currentVehicle == null)
             {
-                throw new ArgumentException("This is not an electricity powered vehicle.");
+                throw new WrongEngineTypeException("electricity", "fuel");
             }
             else if (!isValidFloat)
             {
