@@ -1,4 +1,4 @@
-﻿namespace Ex4.Menus.Test
+﻿namespace Menus.Delegates
 {
     public class Class1
     {
