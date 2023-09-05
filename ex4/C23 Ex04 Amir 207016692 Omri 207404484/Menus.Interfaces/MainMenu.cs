@@ -69,12 +69,12 @@ namespace Ex04
             }
         }
 
-        private void ExecuteSelectedMenuItem(int i_UserChoice)
+        private void ExecuteSelectedMenuItem(int i_UserChoice) // Merge both functions into 1. Send the actual item/pass correct list
         {
             if (m_MainmenuItems[i_UserChoice] is MenuItem)
             {
                 MenuItem? selectedMenuItem = m_MainmenuItems[i_UserChoice] as MenuItem;
-                if (selectedMenuItem != null)
+                if (selectedMenuItem != null) //redundant? 
                 {
                     selectedMenuItem.DisplayMenu();
                 }
