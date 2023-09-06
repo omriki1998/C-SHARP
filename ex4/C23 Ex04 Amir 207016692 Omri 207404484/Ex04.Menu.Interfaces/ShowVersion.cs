@@ -3,9 +3,9 @@ using System.Reflection;
 
 namespace Ex04
 {
-    internal class ShowVersion : Leaf
+    public class ShowVersion : Leaf
     {
-        internal ShowVersion(string i_LeafName) : base(i_LeafName)
+        public ShowVersion(string i_LeafName) : base(i_LeafName)
         {
         }
         public override void MethodToExecute()

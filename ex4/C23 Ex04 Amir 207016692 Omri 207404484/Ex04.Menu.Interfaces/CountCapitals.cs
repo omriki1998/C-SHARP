@@ -3,9 +3,9 @@ using System.Reflection;
 
 namespace Ex04
 {
-    internal class CountCapitals : Leaf
+    public class CountCapitals : Leaf
     {
-        internal CountCapitals(string i_LeafName) : base(i_LeafName)
+        public CountCapitals(string i_LeafName) : base(i_LeafName)
         {
         }
 

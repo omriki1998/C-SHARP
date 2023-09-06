@@ -2,14 +2,14 @@
 
 namespace Ex04
 {
-    internal class ShowDate : Leaf
+    public class ShowDate : ILeaf
     {
 
-        internal ShowDate(string i_LeafName) : base(i_LeafName)
+        public ShowDate(string i_LeafName)
         {
         }
 
-        public override void MethodToExecute()
+        public void MethodToExecute()
         {
             DateTime currentDate = DateTime.Now;
             Console.WriteLine("The date is: {0}\n", currentDate.ToString("yyyy-MM-dd"));

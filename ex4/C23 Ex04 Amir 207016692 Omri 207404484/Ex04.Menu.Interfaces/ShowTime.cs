@@ -2,10 +2,10 @@
 
 namespace Ex04
 {
-    internal class ShowTime : Leaf
+    public class ShowTime : Leaf
     {
 
-        internal ShowTime(string i_LeafName) : base(i_LeafName)
+        public ShowTime(string i_LeafName) : base(i_LeafName)
         {
         }
         public override void MethodToExecute()

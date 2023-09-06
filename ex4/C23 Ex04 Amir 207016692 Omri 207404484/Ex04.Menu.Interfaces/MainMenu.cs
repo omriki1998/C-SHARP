@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ex04
 {
@@ -73,7 +74,7 @@ namespace Ex04
         {
             if (m_MainmenuItems[i_UserChoice] is MenuItem)
             {
-                MenuItem? selectedMenuItem = m_MainmenuItems[i_UserChoice] as MenuItem;
+                MenuItem selectedMenuItem = m_MainmenuItems[i_UserChoice] as MenuItem;
                 if (selectedMenuItem != null) //redundant? 
                 {
                     selectedMenuItem.DisplayMenu();
@@ -85,7 +86,7 @@ namespace Ex04
             }
             else
             {
-                Leaf? selectedLeaf = m_MainmenuItems[i_UserChoice] as Leaf;
+                Leaf selectedLeaf = m_MainmenuItems[i_UserChoice] as Leaf;
                 if (selectedLeaf != null)
                 {
                     selectedLeaf.MethodToExecute();

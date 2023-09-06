@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ex04
 {
-    public class MenuItem : IMenuItem
+    public class MenuItem
     {
         internal string m_MenuName;
         internal List<object> m_MenuItems = new List<object>();
@@ -58,7 +59,7 @@ namespace Ex04
         {
             if (m_MenuItems[i_UserChoice] is MenuItem)
             {
-                MenuItem? selectedMenuItem = m_MenuItems[i_UserChoice] as MenuItem;
+                MenuItem selectedMenuItem = m_MenuItems[i_UserChoice] as MenuItem;
                 if (selectedMenuItem != null)
                 {
                     selectedMenuItem.DisplayMenu();
@@ -70,7 +71,7 @@ namespace Ex04
             }
             else
             {
-                Leaf? selectedLeaf = m_MenuItems[i_UserChoice] as Leaf;
+                Leaf selectedLeaf = m_MenuItems[i_UserChoice] as Leaf;
                 if (selectedLeaf != null)
                 {
                     Console.Clear();
@@ -94,7 +95,7 @@ namespace Ex04
             {
                 m_MenuItems.Add(i_MenuItem);
             }
-            else if (i_ItemInMenu is Leaf i_Leaf)
+            else if (i_ItemInMenu is ILeaf i_Leaf)
             {
                 m_MenuItems.Add(i_Leaf);
             }
