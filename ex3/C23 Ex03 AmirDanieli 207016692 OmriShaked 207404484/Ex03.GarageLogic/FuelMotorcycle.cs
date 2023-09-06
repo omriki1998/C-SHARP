@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 namespace Ex03
 {
     internal class FuelMotorcycle : Motorcycle
